@@ -1,0 +1,12 @@
+{
+  "ID":"a1d1d2c2519a3123799b712e9dbbc387",   
+  "ActionKeyword":"dmhy",                     
+  "Name":"Wox-BT-DMHY",                              
+  "Description":"magnet Link search from share.dmhy.org",    
+  "Author":"OldNick",                     
+  "Version":"0.0.1",                         
+  "Language":"python",                       
+  "Website":"",         
+  "IcoPath": "magnet.png",              
+  "ExecuteFileName":"wox_bt_dmhy.py"   
+}
