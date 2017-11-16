@@ -31,7 +31,7 @@
         {"Name":"結城友奈是勇者Ⅱ","Key":"%E7%B5%90%E5%9F%8E"},
         {"Name":"寶石之國","Key":"%E5%AF%B6%E7%9F%B3%E4%B9%8B%E5%9C%8B"}
     ],
-    "use_synology_download_station":true,
+    "use_synology_download_station":false,
     "synology_myds_url":"http://myds.com:port",
     "synology_account":"account",
     "synology_passwd":"passwd"

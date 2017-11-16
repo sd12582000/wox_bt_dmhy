@@ -37,7 +37,11 @@ Edit the `config.json` file
         {"Name":"動畫同好會","Key":"%E5%8B%95%E7%95%AB%E5%90%8C%E5%A5%BD"},
         {"Name":"如果有妹妹就好了。","Key":"%E6%9C%89%E5%A6%B9%E5%A6%B9"},
         {"Name":"泥鯨之子們在沙地上歌唱","Key":"%E4%B8%8A%E6%AD%8C"}
-    ]
+    ],
+    "use_synology_download_station":false,
+    "synology_myds_url":"http://myds.com:port",
+    "synology_account":"account",
+    "synology_passwd":"passwd"
 }
 ```
 ### Attributes
@@ -45,6 +49,9 @@ Edit the `config.json` file
 * *allow_sort* : result only contain specificy category if use_filter=true 
 * *default_all* : if true query `dmhy` equal `dmhy all` 
 * *default_key* : if `default_all` sets false query `dmhy` show it  
-
+* *use_synology_download_station*: if you use synology nas download
+* *synology_myds_url*: your DiskStation address
+* *synology_account* : Login account name
+* *synology_passwd* : Login account password
 ## License
 This plugin is licensed under the MIT License 
