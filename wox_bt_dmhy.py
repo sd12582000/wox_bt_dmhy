@@ -5,6 +5,7 @@
 
 from wox import Wox,WoxAPI
 from dmhy_helper import DMHYHelper
+from synology_download_station_api import SynologyDownloadStationAPI
 import pyperclip
 class Wox_BT_DMHY(Wox):
     def __init__(self):
@@ -16,7 +17,27 @@ class Wox_BT_DMHY(Wox):
     with open(file_path, 'r',encoding='utf-8') as json_file:
         config = load(json_file)
 
+    if config['use_synology_download_station']:
+        download_station = SynologyDownloadStationAPI(config['synology_myds_url'])
+        res = download_station.login(config['synology_account'], config['synology_passwd'])
+
     helper = DMHYHelper(config['use_filter'], config['allow_sort'])
+
+    def onclick_event(self, magnet_link):
+        """
+        user click resource
+        """
+        if self.config['use_synology_download_station']:
+            self.download_magnet(magnet_link)
+        else:
+            self.copy_link(magnet_link)
+
+    def download_magnet(self, magnet_link):
+        """
+        Creat download magnet task
+        """
+        self.download_station.creat_task(magnet_link)
+
     def copy_link(self, magnet_link):
         """
         copy magnet_link into clipboard
@@ -33,7 +54,7 @@ class Wox_BT_DMHY(Wox):
                 "Title":data['title'],
                 "SubTitle":data['time'],
                 "IcoPath":"magnet.png",
-                "JsonRPCAction":{"method": "copy_link", "parameters": [data['magnet']]},
+                "JsonRPCAction":{"method": "onclick_event", "parameters": [data['magnet']]},
                 "dontHideAfterAction":True
                 })
         return results
@@ -43,6 +64,17 @@ class Wox_BT_DMHY(Wox):
         search resource
         """
         results = []
+        if self.config['use_synology_download_station'] and self.download_station.has_error():
+            error_message = self.download_station.get_error_message()
+            results.append({
+                "Title":'SynologyDownloadStation Error',
+                "SubTitle":error_message,
+                "IcoPath":"magnet.png",
+                "JsonRPCAction":{"method": "copy_link", "parameters": [error_message]},
+                "dontHideAfterAction":True
+                })
+            return results
+
         query = query.strip()
         req_data = []
         if query:
