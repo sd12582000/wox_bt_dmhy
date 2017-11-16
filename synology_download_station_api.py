@@ -14,6 +14,59 @@ class SynologyDownloadStationAPI():
         self.root_path = '{}/webapi/'.format(url)
         self._sid = ''
         self._error = {}
+        self._error_dic={
+            'SYNO.API.Auth':{
+            400:'No such account or incorrect password',
+            401:'Account disabled',
+            402:'Permission denied',
+            403:'2-step verification code required',
+            404:'Failed to authenticate 2-step verification code'
+            },
+            'SYNO.DownloadStation.Task':{
+            400:'File upload failed',
+            401:'Max number of tasks reached',
+            402:'Destination denied',
+            403:'Destination does not exist',
+            404:'Invalid task id',
+            405:'Invalid task action',
+            406:'No default destination',
+            407:'Set destination failed',
+            408:'File does not exist',
+            }
+        }
+
+    def has_error(self):
+        """
+        return error == {}
+        """
+        return bool(self._error)
+
+    def get_error_message(self):
+        """
+        get error code Description
+        """
+        result = ''
+        if self.has_error():
+            if self._error['code'] == 100:
+                result = 'Unknown error'
+            elif self._error['code'] == 101:
+                result = 'Invalid parameter'
+            elif self._error['code'] == 102:
+                result = 'The requested API does not exist'
+            elif self._error['code'] == 103:
+                result = 'The requested method does not exist'
+            elif self._error['code'] == 104:
+                result = 'The requested version does not support the functionality'
+            elif self._error['code'] == 105:
+                result = 'The logged in session does not have permission'
+            elif self._error['code'] == 106:
+                result = 'Session timeout'
+            elif self._error['code'] == 107:
+                result = 'Session interrupted by duplicate login'
+            else:
+                result = self._error_dic[self._error['api']][self._error['code']]
+        
+        return result
 
     def login(self, account, passwd):
         """
@@ -31,8 +84,10 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if req['success']:
             self._sid = req['data']['sid']
+            self._error = {}
         else:
             self._error = req['error']
+            self._error['api'] = payload['api']
         return req['success']
 
     def logout(self, session='DownloadStation'):
@@ -48,6 +103,9 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
 
         return req['success']
 
@@ -64,6 +122,10 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
+
         return req
 
     def get_config(self):
@@ -79,6 +141,10 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
+
         return req
 
     def set_config(self, parameter):
@@ -94,6 +160,10 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
+
         return req
 
     def get_task_list(self):
@@ -109,6 +179,10 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
+
         return req
 
     def creat_task(self, download_link):
@@ -125,20 +199,30 @@ class SynologyDownloadStationAPI():
         req = requests.get(url, params=payload).json()
         if not req['success']:
             self._error = req['error']
+            self._error['api'] = payload['api']
+        else:
+            self._error = {}
+
         return req['success']
 
 if __name__ == "__main__":
     """
     test
     """
-    sy =  SynologyDownloadStationAPI('http://myds.com:5000')
-    result = sy.login('admin','12345')
-    if result :
+    sy =  SynologyDownloadStationAPI('http://myds.com:port')
+    lresult = sy.login('account','passwd')
+    if lresult :
         #print(cr)
         cr = sy.get_task_list()
         #cr = sy.get_config()
-        #cr = sy.creat_task('magnet:?xt=urn:btih:T2OGRBJBO6Z7GJXS6WAMKJ7HBA5TBSGG&dn=&tr=http%3A%2F%2F104.238.198.186%3A8000%2Fannounce&tr=udp%3A%2F%2F104.238.198.186%3A8000%2Fannounce&tr=http%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=http%3A%2F%2Ftracker.publicbt.com%3A80%2Fannounce&tr=http%3A%2F%2Ftracker.prq.to%2Fannounce&tr=http%3A%2F%2Fopen.acgtracker.com%3A1096%2Fannounce&tr=http%3A%2F%2Ftr.bangumi.moe%3A6969%2Fannounce&tr=https%3A%2F%2Ft-115.rhcloud.com%2Fonly_for_ylbud&tr=http%3A%2F%2Fbtfile.sdo.com%3A6961%2Fannounce&tr=http%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce&tr=https%3A%2F%2Ftr.bangumi.moe%3A9696%2Fannounce&tr=http%3A%2F%2Fnyaa.tracker.wf%3A7777%2Fannounce&tr=http%3A%2F%2F208.67.16.113%3A8000%2Fannounce')
-        print(cr)
+        #cr = sy.creat_task('nnounce&tr=http%3A%2F%2F208.67.16.113%3A8000%2Fannounce')
+        #print(cr)
+        print(sy.has_error())
+        print(sy._error)
+        print(sy.get_error_message())
         #sy.logout()
     else:
+        print(sy.has_error())
+        print(sy._error)
+        print(sy.get_error_message())
         print('falut')
