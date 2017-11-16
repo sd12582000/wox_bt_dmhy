@@ -4,7 +4,7 @@
   "Name":"Wox-BT-DMHY",                              
   "Description":"magnet Link search from share.dmhy.org",    
   "Author":"OldNick",                     
-  "Version":"0.0.1",                         
+  "Version":"1.0.0",                         
   "Language":"python",                       
   "Website":"",         
   "IcoPath": "magnet.png",              
